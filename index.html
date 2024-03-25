@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Mahasiswa</title>
+    <link rel="stylesheet" href="asset/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.5/b-2.4.0/b-html5-2.4.0/b-print-2.4.0/datatables.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="asset/style.css">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <span class="navbar-brand">DATA MAHASISWA</span>
+      </div>
+    </nav>
+    
+    <div class="bawahNav">
+      <h1 id="greeting"></h1>
+      <div id="jam-digital">
+        <div id="hours"><p id="jam"></p></div>
+        <div id="minute"><p id="menit"></p></div>
+        <div id="second"><p id="detik"></p></div>
+      </div>
+    </div>
+    
+  <script>
+    window.setTimeout("waktu()",1000);
+    function waktu() {
+        var tanggal = new Date();
+        setTimeout("waktu()",1000);
+        document.getElementById("jam").innerHTML = tanggal.getHours();
+        document.getElementById("menit").innerHTML = tanggal.getMinutes();
+        document.getElementById("detik").innerHTML = tanggal.getSeconds();
+    }
+
+    const greetingElement = document.getElementById('greeting');
+    const currentTime = new Date().getHours();
+    let greetingMessage;
+    if (currentTime >= 5 && currentTime < 10) {
+      greetingMessage = 'Selamat pagi!';
+    } else if (currentTime >= 10 && currentTime < 15) {
+      greetingMessage = 'Selamat siang!';
+    } else if (currentTime >= 15 && currentTime < 18) {
+      greetingMessage = 'Selamat sore!';
+    } else {
+      greetingMessage = 'Selamat malam!';
+    }
+    greetingElement.textContent = greetingMessage;
+    </script>
+
+  <hr>
+  <p class="container quote">Usaha keras tidak akan mengkhianati hasil, tapi bisa mengkhianati impian.</p>
+  <hr>
+
+  <div class="container-fluid">
+  <div class="row justify-content-center">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover" id="myTable">
+          <thead>
+            <tr>
+              <th>NIM</th>
+              <th>Nama</th>
+              <th>Alamat</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="dataBody"></tbody>
+        </table>
+      </div>
+
+      <form id="addForm" class="mb-3">
+        <div class="form-group">
+          <label for="nim">NIM</label>
+          <input type="text" class="form-control" id="nim"  />
+        </div>
+        <div class="form-group">
+          <label for="nama">Nama</label>
+          <input type="text" class="form-control" id="nama"  />
+        </div>
+        <div class="form-group">
+          <label for="alamat">Alamat</label>
+          <input type="text" class="form-control" id="alamat"  />
+        </div>
+        <button type="submit" class="btn mt-2 btn-success text-white">
+          <i class="bi bi-plus-circle"></i> Tambah Data
+        </button>
+        <button type="reset" class="btn mt-2 btn-warning text-white">
+          <i class="bi bi-arrow-clockwise"></i> Reset
+        </button>        
+        </button>
+      </form>
+    </div>
+
+    <div class="container">
+      <div
+        class="modal fade"
+        id="editModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="editModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editModalLabel">Edit Data</h5>
+              
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form id="editForm">
+                <div class="form-group">
+                  <label for="editNim">NIM</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editNim"
+                    readonly
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="editNama">Nama</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editNama"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="editAlamat">Alamat</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editAlamat"
+                    required
+                  />
+                </div>
+                <button type="submit" class="btn mt-2 btn-success text-white">
+                  <i class="bi bi-floppy"></i> Simpan
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Penambahan Data Berhasil -->
+      <div
+        class="modal fade"
+        id="addSuccessModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="addSuccessModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header bg-success">
+              <h5 class="modal-title text-white" id="addSuccessModalLabel">
+                Tambah Data
+              </h5>
+              
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </button>
+            </div>
+            <div class="modal-body">Data berhasil ditambahkan!</div>
+            <div class="modal-footer"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Pengubahan Data Berhasil -->
+      <div
+        class="modal fade"
+        id="editSuccessModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="editSuccessModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header bg-info">
+              <h5 class="modal-title text-white" id="editSuccessModalLabel">
+                Ubah Data
+              </h5>
+              
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </button>
+            </div>
+            <div class="modal-body">Data berhasil diubah!</div>
+            <div class="modal-footer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Penghapusan Data Berhasil -->
+    <div
+      class="modal fade"
+      id="deleteSuccessModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="deleteSuccessModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-danger">
+            <h5 class="modal-title text-white" id="deleteSuccessModalLabel">
+              Hapus Data
+            </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </button>
+          </div>
+          <div class="modal-body">Data berhasil dihapus!</div>
+          <div class="modal-footer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Gagal Menambahkan Data -->
+<div class="modal fade" id="addErrorModal" tabindex="-1" role="dialog" aria-labelledby="addErrorModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title text-white" id="deleteSuccessModalLabel">
+          Warning!
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </button>
+      </div>
+      <div class="modal-body">
+        <p id="errorMessage">Gagal menambahkan data. Pastikan semua kolom terisi.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <script src="asset/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.5/b-2.4.0/b-html5-2.4.0/b-print-2.4.0/datatables.min.js"></script>
+    <script src="asset/script.js"></script>
+    <script>
+      let table = new DataTable('');
+      $(document).ready(function () {
+        $('#myTable').DataTable({
+          // dom: 'Bfrtip'
+        });
+      });
+    </script>
+  </body>
+</html>
