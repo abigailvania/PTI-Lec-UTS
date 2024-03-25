@@ -1,0 +1,84 @@
+body {
+  background-color: #ffffff;
+  background-size: cover;
+  background-image: url('wallpaper.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+.navbar {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+.quote {
+  text-align: center;
+  font-style: italic;
+  color: #007bff;
+  margin-bottom: 20px;
+}
+
+.modal-header {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+.modal-footer {
+  justify-content: center;
+}
+
+.bawahNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px; 
+  background-color: #f8f9fa; 
+}
+
+#greeting {
+  margin: 0; 
+}
+
+#jam-digital {
+  display: flex;
+  align-items: center;
+}
+
+#jam-digital > div {
+  width: 100px;
+  height: 60px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#jam-digital p {
+  color: #333333;
+  font-size: 36px;
+  text-align: center;
+  margin: 0;
+}
+
+.container-fluid {
+  width: 98%; 
+  margin: 0 auto; 
+}
+
+.table-responsive {
+  width: 100%; 
+}
+
+#addForm, #editForm {
+  width: 100%; 
+}
+
+button {
+  color:#ffffff;
+}

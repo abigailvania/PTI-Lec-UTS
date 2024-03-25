@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRUD Modal dengan Bootstrap dan JavaScript</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <style>
+        .swal-bg-header {
+          background-color: #f1f1f1; /* Warna latar belakang yang Anda inginkan */
+        }
+      </style>
+      
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg" style="background-color: black">
+      <div class="container-fluid">
+        <h3> <span style="color: red;">DATA</span> <span style="color: greenyellow;">MAHASISWA</span> </h3>
+      </div>
+    </nav>
+
+    <div class="container-fluid mt-5">
+      <table id="tabelData" class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>NIM</th>
+            <th>Nama</th>
+            <th>Alamat</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Data akan dimuat menggunakan JavaScript -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Card Tambah Data -->
+    <div class="container-fluid mt-3">
+      <div class="card" id="cardTambah">
+        <div class="card-body">
+          <form action="">
+            <h5 class="card-title">Tambah Data Mahasiswa</h5>
+            <div class="form-group">
+              <label for="nim">NIM:</label>
+              <input type="text" class="form-control" id="nim" />
+            </div>
+            <div class="form-group">
+              <label for="nama">Nama:</label>
+              <input type="text" class="form-control" id="nama" />
+            </div>
+            <div class="form-group">
+              <label for="alamat">Alamat:</label>
+              <input type="text" class="form-control" id="alamat" />
+            </div>
+            <button
+              type="button"
+              class="btn btn-success"
+              onclick="tambahData()"
+            >
+              <i class="bi bi-plus-circle"></i> Tambah
+            </button>
+            <button type="reset" class="btn btn-warning">
+              <i class="bi bi-arrow-clockwise"></i> Reset
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Edit Data -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Edit Data Mahasiswa</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="editForm">
+            <div class="form-group">
+              <label for="editNim">NIM:</label>
+              <input type="text" class="form-control" id="editNim" readonly>
+            </div>
+            <div class="form-group">
+              <label for="editNama">Nama:</label>
+              <input type="text" class="form-control" id="editNama">
+            </div>
+            <div class="form-group">
+              <label for="editAlamat">Alamat:</label>
+              <input type="text" class="form-control" id="editAlamat">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="simpanPerubahan()">Simpan Perubahan</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <script>
+        // Fungsi untuk mendapatkan data dari localStorage
+        function getDataFromLocalStorage() {
+          return JSON.parse(localStorage.getItem("dataMahasiswa")) || [];
+        }
+      
+        // Fungsi untuk menyimpan data ke localStorage
+        function saveDataToLocalStorage(data) {
+          localStorage.setItem("dataMahasiswa", JSON.stringify(data));
+        }
+      
+        // Fungsi untuk menampilkan data
+        function tampilkanData() {
+          let dataMahasiswa = getDataFromLocalStorage();
+          $("#tabelData").DataTable().clear().draw();
+          dataMahasiswa.forEach((mahasiswa) => {
+            $("#tabelData")
+              .DataTable()
+              .row.add([
+                mahasiswa.nim,
+                mahasiswa.nama,
+                mahasiswa.alamat,
+                `<button type="button" class="btn btn-info btn-sm" onclick="editData('${mahasiswa.nim}')"><i class="bi bi-pencil-square"></i> Ubah</button>
+              <button type="button" class="btn btn-danger btn-sm" onclick="hapusData('${mahasiswa.nim}')"><i class="bi bi-trash"></i> Hapus</button>`,
+              ])
+              .draw();
+          });
+        }
+      
+        // Fungsi untuk menambah data
+        function tambahData() {
+          let nim = document.getElementById("nim").value;
+          let nama = document.getElementById("nama").value;
+          let alamat = document.getElementById("alamat").value;
+      
+          if (nim && nama && alamat) {
+            let dataMahasiswa = getDataFromLocalStorage();
+            dataMahasiswa.push({ nim, nama, alamat });
+            saveDataToLocalStorage(dataMahasiswa);
+            tampilkanData();
+            showAlert("Data berhasil ditambahkan.", "success");
+          } else {
+            showAlert("Semua kolom harus diisi.", "error");
+          }
+        }
+      
+        // Fungsi untuk mengedit data
+        function editData(nim) {
+          let dataMahasiswa = getDataFromLocalStorage();
+          let index = dataMahasiswa.findIndex(
+            (mahasiswa) => mahasiswa.nim === nim
+          );
+          if (index !== -1) {
+            let mahasiswa = dataMahasiswa[index];
+            document.getElementById("nim").value = mahasiswa.nim;
+            document.getElementById("nama").value = mahasiswa.nama;
+            document.getElementById("alamat").value = mahasiswa.alamat;
+            dataMahasiswa.splice(index, 1);
+            saveDataToLocalStorage(dataMahasiswa);
+          }
+        }
+      
+        // Fungsi untuk menghapus data
+        function hapusData(nim) {
+          Swal.fire({
+            title: "Anda yakin?",
+            text: "Anda tidak akan dapat mengembalikan ini!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Ya, hapus!",
+            cancelButtonText: "Batal",
+            customClass: {
+              header: "swal-bg-header", // Menambahkan kelas CSS untuk latar belakang header
+            },
+          }).then((result) => {
+            if (result.isConfirmed) {
+              let dataMahasiswa = getDataFromLocalStorage();
+              let index = dataMahasiswa.findIndex(
+                (mahasiswa) => mahasiswa.nim === nim
+              );
+              if (index !== -1) {
+                dataMahasiswa.splice(index, 1);
+                saveDataToLocalStorage(dataMahasiswa);
+                tampilkanData();
+                showAlert("Data berhasil dihapus.", "success");
+              }
+            }
+          });
+        }
+      
+        // Fungsi untuk menampilkan alert
+        function showAlert(message, type) {
+          Swal.fire({
+            title: message,
+            icon: type,
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        }
+      
+        $(document).ready(function () {
+          $("#tabelData").DataTable({
+            lengthMenu: [
+              [5, 10, 25, -1],
+              [5, 10, 25, "All"],
+            ],
+            searching: true,
+            paging: true,
+          });
+          tampilkanData();
+        });
+      </script>
+      
+  </body>
+</html>
